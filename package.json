@@ -1,6 +1,9 @@
 {
   "name": "attestationcheck",
   "version": "1.0.0",
+  "bin": {
+    "attestationcheck": "index.js"
+  },
   "dependencies": {
     "@graphprotocol/common-ts": "^2.0.7",
     "ethers": "^6.8.1"

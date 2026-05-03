@@ -10,10 +10,18 @@ When an allocation is found, the indexer's URL and geohash declared in the Subgr
 ## Installation
 ```bash
 npm install
+npm link    # optional, exposes the `attestationcheck` command globally
 ```
 
 ## Usage
 ```bash
+attestationcheck '<attestation-json>' [chainId]
+```
+
+If you skipped `npm link`, equivalent invocations:
+```bash
+npx attestationcheck '<attestation-json>' [chainId]
+./index.js '<attestation-json>' [chainId]
 node index.js '<attestation-json>' [chainId]
 ```
 
@@ -22,7 +30,7 @@ node index.js '<attestation-json>' [chainId]
 
 Example:
 ```bash
-node index.js '{"requestCID":"0x...","responseCID":"0x...","subgraphDeploymentID":"0x...","r":"0x...","s":"0x...","v":27}' 42161
+attestationcheck '{"requestCID":"0x...","responseCID":"0x...","subgraphDeploymentID":"0x...","r":"0x...","s":"0x...","v":27}'
 ```
 
 To fetch an attestation from the gateway:

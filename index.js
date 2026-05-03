@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const { recoverAttestation } = require('@graphprotocol/common-ts');
 const ethers = require('ethers');
 
