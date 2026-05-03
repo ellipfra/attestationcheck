@@ -125,8 +125,28 @@ function ensureMetaBlock(query) {
     return query.slice(0, lastBrace) + ' _meta { block { number } } ' + query.slice(lastBrace);
 }
 
-function md(value) {
-    return String(value).replace(/\|/g, '\\|');
+function pad(s, width) {
+    s = String(s);
+    if (s.length >= width) return s;
+    return s + ' '.repeat(width - s.length);
+}
+
+function renderTable(headers, rows, maxColWidths) {
+    const cols = headers.length;
+    const widths = headers.map((h, i) => {
+        const max = Math.max(h.length, ...rows.map(r => String(r[i]).length));
+        return maxColWidths && maxColWidths[i] ? Math.min(max, maxColWidths[i]) : max;
+    });
+    const truncate = (s, w) => (String(s).length > w ? String(s).slice(0, w - 1) + '…' : String(s));
+    const sep = (l, m, r) => l + widths.map(w => '─'.repeat(w + 2)).join(m) + r;
+    const row = (cells) => '│ ' + cells.map((c, i) => pad(truncate(c, widths[i]), widths[i])).join(' │ ') + ' │';
+    const lines = [];
+    lines.push(sep('┌', '┬', '┐'));
+    lines.push(row(headers));
+    lines.push(sep('├', '┼', '┤'));
+    for (const r of rows) lines.push(row(r));
+    lines.push(sep('└', '┴', '┘'));
+    return lines.join('\n');
 }
 
 async function main(deploymentId, query, apiKey, chainId) {
@@ -141,9 +161,8 @@ async function main(deploymentId, query, apiKey, chainId) {
     console.log(`Deployment: ${deploymentId}`);
     console.log(`Active indexers: ${allocations.length}`);
     console.log();
-    console.log('| Indexer | Address | Block | Response | Verified |');
-    console.log('|---|---|---|---|---|');
 
+    const rows = [];
     for (const alloc of allocations) {
         const addr = alloc.indexer.id;
         const url = alloc.indexer.url || '';
@@ -169,7 +188,7 @@ async function main(deploymentId, query, apiKey, chainId) {
                 } else if (result.indexer) {
                     verified = `MISMATCH (${result.indexer})`;
                 } else {
-                    verified = `unknown allocation ${result.allocationId}`;
+                    verified = `bad allocation ${result.allocationId}`;
                 }
             } else {
                 verified = 'no attestation';
@@ -178,8 +197,12 @@ async function main(deploymentId, query, apiKey, chainId) {
             response = `request failed: ${e.message}`;
         }
 
-        console.log(`| ${md(label)} | \`${md(addr)}\` | ${md(block)} | ${md(response)} | ${md(verified)} |`);
+        rows.push([label, addr, block, response, verified]);
     }
+
+    const headers = ['Indexer', 'Address', 'Block', 'Response', 'Verified'];
+    const maxColWidths = [16, 42, 10, 60, 30];
+    console.log(renderTable(headers, rows, maxColWidths));
 }
 
 if (process.argv.length >= 5) {
