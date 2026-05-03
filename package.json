@@ -2,7 +2,8 @@
   "name": "attestationcheck",
   "version": "1.0.0",
   "bin": {
-    "attestationcheck": "index.js"
+    "attestationcheck": "index.js",
+    "compareindexer": "compareindexer.js"
   },
   "dependencies": {
     "@graphprotocol/common-ts": "^2.0.7",

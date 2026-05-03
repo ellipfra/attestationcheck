@@ -41,6 +41,27 @@ curl -i -X POST 'https://gateway.thegraph.com/api/<API_KEY>/subgraphs/id/<SUBGRA
 ```
 The attestation is in the `graph-attestation` response header.
 
+## compareindexer — query every indexer allocated to a deployment
+
+Sends the same query to every indexer with an active allocation on the deployment (using the gateway's `deployments/id/<dep>/indexers/id/<addr>` pinning endpoint), verifies each attestation, and prints a comparison table.
+
+```bash
+compareindexer <deploymentId> "<graphql-query>" <apiKey> [chainId]
+```
+
+If your query does not contain `_meta`, `_meta { block { number } }` is auto-injected so the `Block` column is populated.
+
+The `Response` column shows the single scalar value if the query has only one leaf (e.g. `pool.totalValueLockedUSD`). Otherwise it shows compact JSON plus a short hash so identical responses across indexers are visually grouped.
+
+The list of allocated indexers is fetched from the Graph Network Arbitrum subgraph. Override its current id with `NETWORK_SUBGRAPH_ID=<id>` if it has been republished.
+
+Example:
+```bash
+compareindexer QmP1FMFsU4wNcui1eezwuvBjxrbLPucKrKZ9Kftn34nULw \
+  '{ pool(id:"0x7486ff76f69872d27b22dada4078bd55b36a5324") { totalValueLockedUSD } }' \
+  YOUR_API_KEY
+```
+
 ## Expected output
 ```
 ## Recovering signer
