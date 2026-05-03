@@ -46,7 +46,7 @@ The attestation is in the `graph-attestation` response header.
 Sends the same query to every indexer with an active allocation on the deployment (using the gateway's `deployments/id/<dep>/indexers/id/<addr>` pinning endpoint), verifies each attestation, and prints a comparison table.
 
 ```bash
-compareindexer <deploymentId> "<graphql-query>" <apiKey> [chainId]
+compareindexer <apiKey> <deploymentId> "<graphql-query>" [chainId]
 ```
 
 If your query does not contain `_meta`, `_meta { block { number } }` is auto-injected so the `Block` column is populated.
@@ -57,9 +57,9 @@ The list of allocated indexers is fetched from the Graph Network Arbitrum subgra
 
 Example:
 ```bash
-compareindexer QmP1FMFsU4wNcui1eezwuvBjxrbLPucKrKZ9Kftn34nULw \
-  '{ pool(id:"0x7486ff76f69872d27b22dada4078bd55b36a5324") { totalValueLockedUSD } }' \
-  YOUR_API_KEY
+compareindexer YOUR_API_KEY \
+  QmP1FMFsU4wNcui1eezwuvBjxrbLPucKrKZ9Kftn34nULw \
+  '{ pool(id:"0x7486ff76f69872d27b22dada4078bd55b36a5324") { totalValueLockedUSD } }'
 ```
 
 ## Expected output

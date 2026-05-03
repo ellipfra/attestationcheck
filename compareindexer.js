@@ -206,15 +206,15 @@ async function main(deploymentId, query, apiKey, chainId) {
 }
 
 if (process.argv.length >= 5) {
-    const [, , deploymentId, query, apiKey, chainArg] = process.argv;
+    const [, , apiKey, deploymentId, query, chainArg] = process.argv;
     const chainId = chainArg ? parseInt(chainArg, 10) : defaultChainId;
     main(deploymentId, query, apiKey, chainId).catch(err => {
         console.error('Error:', err.message || err);
         process.exit(1);
     });
 } else {
-    console.error('Usage: compareindexer <deploymentId> "<graphql-query>" <apiKey> [chainId]');
+    console.error('Usage: compareindexer <apiKey> <deploymentId> "<graphql-query>" [chainId]');
     console.error('Example:');
-    console.error('  compareindexer QmP1FMFsU4w... \'{ pool(id:"0x...") { totalValueLockedUSD } _meta { block { number } } }\' YOUR_API_KEY');
+    console.error('  compareindexer YOUR_API_KEY QmP1FMFsU4w... \'{ pool(id:"0x...") { totalValueLockedUSD } }\'');
     process.exit(1);
 }
